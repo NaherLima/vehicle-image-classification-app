@@ -27,9 +27,7 @@ The model predicts the following 7 vehicle classes:
 - **Test Accuracy:** 98.34%
 - **Test Loss:** 0.0895
 
-> *(Update these values if your final notebook shows slightly different results.)*
 
----
 
 ## 4. Project Files
 - `app.py` → Streamlit app code
