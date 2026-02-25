@@ -4,7 +4,8 @@ import numpy as np
 from PIL import Image
 import json
 from pathlib import Path
-
+import gdown
+import urllib.request
 # Page settings
 st.set_page_config(page_title="Vehicle Image Classifier", page_icon="🚗")
 st.title("🚗 Vehicle Image Classification")
@@ -14,9 +15,19 @@ st.write("Upload a vehicle image to predict its class and confidence score.")
 MODEL_PATH = Path("models/vehicle_classifier_best.h5")
 CLASS_NAMES_PATH = Path("models/class_names.json")
 
+
+# Google Drive direct download link for your model (.h5)
+MODEL_URL = "https://drive.google.com/uc?export=download&id=1l0Y5efRxBRS6usPhLovl2lNHgCwQAo1h"
+
+def ensure_model_file():
+    MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    if not MODEL_PATH.exists():
+        st.info("Model file not found in repo. Downloading from Google Drive... (first run only)")
+        urllib.request.urlretrieve(MODEL_URL, MODEL_PATH)
 # Load model and class names
 @st.cache_resource
 def load_model():
+    ensure_model_file()
     return tf.keras.models.load_model(MODEL_PATH)
 
 @st.cache_data
@@ -54,4 +65,5 @@ if uploaded_file is not None:
     st.subheader("All Class Probabilities")
     prob_data = {class_names[i]: float(preds[i]) for i in range(len(class_names))}
     prob_data = dict(sorted(prob_data.items(), key=lambda x: x[1], reverse=True))
+
     st.bar_chart(prob_data)
